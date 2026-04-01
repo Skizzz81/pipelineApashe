@@ -1,0 +1,14 @@
+name: Deploy apash
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deploy apash
+        run: |
+          cd stack-monitoring
+          docker compose up -d apache
