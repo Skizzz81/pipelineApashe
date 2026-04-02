@@ -18,14 +18,8 @@ jobs:
           severity: CRITICAL,HIGH
           ignore-unfixed: true
           vuln-type: os,library
-          format: json
-          output: trivy-web-dvwa.json
+          format: table
           exit-code: 0
-      - name: Summary web-dvwa
-        run: |
-          critical=$(jq '[.Results[]?.Vulnerabilities[]? | select(.Severity=="CRITICAL")] | length' trivy-web-dvwa.json)
-          high=$(jq '[.Results[]?.Vulnerabilities[]? | select(.Severity=="HIGH")] | length' trivy-web-dvwa.json)
-          echo "web-dvwa => CRITICAL=$critical HIGH=$high"
 
       - name: Scan juice-shop
         uses: aquasecurity/trivy-action@master
@@ -35,11 +29,5 @@ jobs:
           severity: CRITICAL,HIGH
           ignore-unfixed: true
           vuln-type: os,library
-          format: json
-          output: trivy-juice-shop.json
+          format: table
           exit-code: 0
-      - name: Summary juice-shop
-        run: |
-          critical=$(jq '[.Results[]?.Vulnerabilities[]? | select(.Severity=="CRITICAL")] | length' trivy-juice-shop.json)
-          high=$(jq '[.Results[]?.Vulnerabilities[]? | select(.Severity=="HIGH")] | length' trivy-juice-shop.json)
-          echo "juice-shop => CRITICAL=$critical HIGH=$high"
