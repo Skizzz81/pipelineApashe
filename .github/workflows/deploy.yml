@@ -3,6 +3,9 @@ name: Trivy Scan
 on:
   workflow_dispatch:
 
+env:
+  TRIVY_DISABLE_VEX_NOTICE: "true"
+
 jobs:
   scan:
     runs-on: ubuntu-latest
@@ -15,8 +18,14 @@ jobs:
           severity: CRITICAL,HIGH
           ignore-unfixed: true
           vuln-type: os,library
-          format: table
+          format: json
+          output: trivy-web-dvwa.json
           exit-code: 0
+      - name: Summary web-dvwa
+        run: |
+          critical=$(jq '[.Results[]?.Vulnerabilities[]? | select(.Severity=="CRITICAL")] | length' trivy-web-dvwa.json)
+          high=$(jq '[.Results[]?.Vulnerabilities[]? | select(.Severity=="HIGH")] | length' trivy-web-dvwa.json)
+          echo "web-dvwa => CRITICAL=$critical HIGH=$high"
 
       - name: Scan juice-shop
         uses: aquasecurity/trivy-action@master
@@ -26,5 +35,11 @@ jobs:
           severity: CRITICAL,HIGH
           ignore-unfixed: true
           vuln-type: os,library
-          format: table
+          format: json
+          output: trivy-juice-shop.json
           exit-code: 0
+      - name: Summary juice-shop
+        run: |
+          critical=$(jq '[.Results[]?.Vulnerabilities[]? | select(.Severity=="CRITICAL")] | length' trivy-juice-shop.json)
+          high=$(jq '[.Results[]?.Vulnerabilities[]? | select(.Severity=="HIGH")] | length' trivy-juice-shop.json)
+          echo "juice-shop => CRITICAL=$critical HIGH=$high"
