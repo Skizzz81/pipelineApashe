@@ -1,14 +1,22 @@
-name: Deploy apash
+name: Trivy Scan
 
 on:
   workflow_dispatch:
 
 jobs:
-  deploy:
-    runs-on: self-hosted
+  scan:
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: Deploy apash
-        run: |
-          cd stack-monitoring
-          docker compose up -d apache
+      - name: Scan web-dvwa
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: vulnerables/web-dvwa:latest
+          format: table
+          exit-code: 0
+
+      - name: Scan juice-shop
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: bkimminich/juice-shop:latest
+          format: table
+          exit-code: 0
